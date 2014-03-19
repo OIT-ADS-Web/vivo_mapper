@@ -11,8 +11,8 @@ Gem::Specification.new do |spec|
   spec.requirements  << "jar 'com.hp.hpl.jena:sdb', '1.3.4'"
   spec.requirements  << "jar 'com.h2database:h2', '1.3.175'"
   spec.description   = %q{A mapper to load data into Vivo.}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
+  spec.summary       = %q{JRuby library using Jena to ingest RDF-mapped data into a Vivo SDB store.}
+  spec.homepage      = "http://scholars.duke.edu"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
