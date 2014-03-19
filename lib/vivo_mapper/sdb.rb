@@ -1,5 +1,3 @@
-require_relative '../../vendor/sdb.jar'
-
 java_import 'com.hp.hpl.jena.sdb.sql.SDBConnection'
 java_import 'com.hp.hpl.jena.query.DatasetFactory'
 java_import 'com.hp.hpl.jena.sdb.SDBFactory'
