@@ -10,6 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["scholars-tech@duke.edu"]
   spec.requirements  << "jar 'com.hp.hpl.jena:sdb', '1.3.4'"
   spec.requirements  << "jar 'com.h2database:h2', '1.3.175'"
+  spec.requirements  << "jar 'mysql:mysql-connector-java', '5.1.14'"
   spec.description   = %q{A mapper to load data into Vivo.}
   spec.summary       = %q{JRuby library using Jena to ingest RDF-mapped data into a Vivo SDB store.}
   spec.homepage      = "http://scholars.duke.edu"
