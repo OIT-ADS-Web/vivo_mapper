@@ -1,14 +1,32 @@
 # VivoMapper
 
 Duke's JRuby library using the Jena library to ingest arbitrary RDF-mapped data
-into a Vivo SDB store. The library expects to receive an incoming graph (or
-does it receive a resource and a map??) and a SparQL construct query, which it
-runs against an SDB store in order to create a graph of live data. It then
-performs a diff, generating a list of adds and removes, which it then executes
-against the SDB store. 
+into a Vivo SDB store. 
 
-Note that this ingest process bypasses the Vivo app entirely. The relationship
-is that both communicate with the same data store.
+Note:  this was designed so that each call represents an update of one 
+component of a person's profile. (For example: a refresh of all Prof Smith's
+publications)
+
+The library expects 3 configurable items per call:
+
+1. mappable resource: A data-structure-type object which serves as a container for 
+the data of a single entity (ie. a single publication). A collection of these 
+resources are passed to vivo_mapper which combines them all into a single graph
+representing a person's most recent, updated version of that section of their profile.
+
+2. map: Tells vivo_mapper how the values in a mappable resource are to be represented 
+in Vivo. This map consists primarily of a collection of key-value pairs where a 
+key is the resource instance variable name and the value is the predicate to which 
+that instance variable value should be mapped.
+
+3. SparQL construct query: vivo_mapper will run this against the current SDB store to 
+create a graph of data already in Vivo. The resulting graph will be compared against 
+the graph created from the combined resources passed in.  vivo_mapper diffs the two 
+graphs. The differences found (adds and removes) are then applied to the SDB 
+store to perform the actual update.
+
+Note: this ingest process bypasses the Vivo app entirely. The relationship is that both
+communicate with the same data store.
 
 ## Installation
 
@@ -60,3 +78,4 @@ TODO: Convert RDFPrefixes to something that can be configured outside the gem.
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
