@@ -157,6 +157,8 @@ module VivoMapper
         "http://vitro.mannlib.cornell.edu/default/vitro-kb-inf"
       when 'Inference2'
         "http://vitro.mannlib.cornell.edu/default/vitro-kb-2"
+      when 'InferenceRebuild'
+        "http://vitro.mannlib.cornell.edu/default/vitro-kb-inf-rebuild"
       else
         "https://vivo.duke.edu/a/graph/#{name}"
       end
