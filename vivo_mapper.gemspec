@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = VivoMapper::VERSION
   spec.authors       = ["Jim Wood", "Sheri Tibbs", "Richard Outten", "Patrick McElwee"]
   spec.email         = ["scholars-tech@duke.edu"]
-  spec.requirements  << "jar 'com.hp.hpl.jena:sdb', '1.3.4'"
+  spec.requirements  << "jar 'org.apache.jena:jena-sdb', '1.3.6'"
   spec.requirements  << "jar 'com.h2database:h2', '1.3.175'"
   spec.requirements  << "jar 'mysql:mysql-connector-java', '5.1.14'"
   spec.description   = %q{A mapper to load data into Vivo.}

@@ -3,7 +3,6 @@ java_import 'com.hp.hpl.jena.query.QueryFactory'
 java_import 'com.hp.hpl.jena.query.QueryExecutionFactory'
 java_import 'com.hp.hpl.jena.query.ResultSetFormatter'
 
-require 'vivo_mapper/rdb'
 require 'vivo_mapper/mapper'
 require 'vivo_mapper/loaders/difference_loader'
 require 'vivo_mapper/loaders/simple_loader'
@@ -91,28 +90,6 @@ module VivoMapper
       end
     end
 
-    def archive_metadata(model_name)
-      archive_destination_model(:rdb,model_name)
-    end
-
-    def archive_destination_model(format, model_name)
-      store(model_name, 'archive') do |archive_model|
-        store(model_name, 'destination', format) do |destination_model|
-          archive_model.remove_all
-          archive_model.add(destination_model)
-        end
-      end
-    end
-
-    def restore_archived_metadata(model_name)
-      store(model_name, 'archive') do |archive_model|
-        store(model_name, 'destination', :rdb) do |destination_model|
-          destination_model.remove_all
-          destination_model.add(archive_model)
-        end
-      end
-    end
-
     def load_resources(name, resources=[],transaction_type='add')
       changed; notify_observers(resources)
       truncate('incoming')
@@ -169,11 +146,7 @@ module VivoMapper
     end
 
     def data_store(s, format=:sdb)
-      result = config.send("#{s}_sdb")
-      if format == :rdb
-        result = VivoMapper::RDB.from_sdb(result)
-      end
-      result
+      config.send("#{s}_sdb")
     end
 
     def get_from_destination(model_name, query_string, variable_name)
