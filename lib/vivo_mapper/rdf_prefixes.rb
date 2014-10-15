@@ -26,9 +26,17 @@ module RdfPrefixes
     "scires"  => "http://vivoweb.org/ontology/scientific-research#",
     "skos"    => "http://www.w3.org/2004/02/skos/core#",
     "vpublic" => "http://vitro.mannlib.cornell.edu/ns/vitro/public#",
-    "core"    => "http://vivoweb.org/ontology/core#"
+    "core"    => "http://vivoweb.org/ontology/core#",
+    "vivo"    => "http://vivoweb.org/ontology/core#"
   }
 
+  def obo_has_contact_info
+    "ARG_2000028"
+  end
+
+  def obo_contact_info_of
+    "ARG_2000029"
+  end
 
   def method_missing(method_sym,*args, &block)
     if prefix = PREFIX_DEFN[method_sym.to_s]
