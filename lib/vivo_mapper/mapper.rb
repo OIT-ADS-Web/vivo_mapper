@@ -74,11 +74,8 @@ module VivoMapper
              resource.add_property(predicate,linked_resource)
           end
 
-          inverse_properties_iter = predicate.list_inverse
-          while inverse_properties_iter.has_next
-            inverse_predicate = inverse_properties_iter.next
-            linked_resource.add_property(inverse_predicate,resource)
-          end
+          _add_inverses(resource, linked_resource, predicate.list_inverse)
+          _add_inverses(resource, linked_resource, predicate.list_inverse_of)
 
           if predicate.is_symmetric_property
             linked_resource.add_property(predicate,resource)
@@ -117,6 +114,13 @@ module VivoMapper
 
     def _create_model_resource_from_uri(uri)
       model.create_resource(uri)
+    end
+
+    def _add_inverses(resource, linked_resource, inverse_iter)
+      while inverse_iter.has_next
+        inverse_predicate = inverse_iter.next
+        linked_resource.add_property(inverse_predicate, resource)
+      end
     end
 
   end
