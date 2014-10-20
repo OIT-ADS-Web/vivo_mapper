@@ -38,6 +38,14 @@ module RdfPrefixes
     "ARG_2000029"
   end
 
+  def obo_part_of
+    "BFO_0000050"
+  end
+
+  def obo_has_part
+    "BFO_0000051"
+  end
+
   def method_missing(method_sym,*args, &block)
     if prefix = PREFIX_DEFN[method_sym.to_s]
       "#{prefix}#{args.first}"
