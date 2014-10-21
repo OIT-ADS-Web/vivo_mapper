@@ -46,6 +46,22 @@ module RdfPrefixes
     "BFO_0000051"
   end
 
+  def obo_participates_in
+    "RO_0000056"
+  end
+
+  def obo_has_participant
+    "RO_0000057"
+  end
+
+  def obo_has_output
+    "RO_0002234"
+  end
+
+  def obo_has_input
+    "RO_0002233"
+  end
+
   def method_missing(method_sym,*args, &block)
     if prefix = PREFIX_DEFN[method_sym.to_s]
       "#{prefix}#{args.first}"
