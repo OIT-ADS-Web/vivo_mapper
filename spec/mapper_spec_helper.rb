@@ -18,14 +18,6 @@ module TestMappableMap
     "#{namespace}#{mappable.test_id}"
   end
 
-  def types(mappable)
-    []
-  end
-
-  def inferred_types
-    []
-  end
-
   def properties(mappable)
     {
       "http://testing/exampleDataAttribute" => mappable.test_data_attribute,
