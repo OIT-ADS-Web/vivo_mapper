@@ -62,6 +62,10 @@ module RdfPrefixes
     "RO_0002233"
   end
 
+  def obo_information_content_entity
+    "IAO_0000030"
+  end
+
   def method_missing(method_sym,*args, &block)
     if prefix = PREFIX_DEFN[method_sym.to_s]
       "#{prefix}#{args.first}"
