@@ -78,6 +78,14 @@ module RdfPrefixes
     "ERO_0000224"
   end
 
+  def obo_role_realized_in
+    "BFO_0000054"
+  end
+
+  def obo_realizes_role
+    "BFO_0000055"
+  end
+
   def method_missing(method_sym,*args, &block)
     if prefix = PREFIX_DEFN[method_sym.to_s]
       "#{prefix}#{args.first}"
