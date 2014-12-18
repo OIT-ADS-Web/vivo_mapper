@@ -8,6 +8,9 @@ module VivoMapper
   class Mapper
     include RdfPrefixes
 
+    class Error < RuntimeError
+    end
+
     attr_reader :namespace, :model, :ontology_model
 
     def initialize(namespace, model, ontology_model)
@@ -102,13 +105,13 @@ module VivoMapper
 
     def _get_ontology_property_by_uri(uri)
       ont_property = ontology_model.get_ont_property(uri)
-      raise "Property: #{uri} not found in ontology" unless ont_property
+      raise Error, "Property: #{uri} not found in ontology" unless ont_property
       ont_property
     end
 
     def _get_ontology_class_by_uri(uri)
       ont_class = ontology_model.get_ont_class(uri)
-      raise "Class: #{uri} not found in ontology" unless ont_class
+      raise Error, "Class: #{uri} not found in ontology" unless ont_class
       ont_class
     end
 
