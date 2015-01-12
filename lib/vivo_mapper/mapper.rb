@@ -27,31 +27,16 @@ module VivoMapper
       resource
     end
 
+    def type_property
+      @type_property ||= _get_ontology_property_by_uri(rdf("type"))
+    end
+
     def assign_types(resource, mappable)
-      most_specific_type_uri = mappable.most_specific_type
-      return unless most_specific_type_uri
-
-      type_class =                  _get_ontology_class_by_uri(most_specific_type_uri)
-      most_specific_type_property = _get_ontology_property_by_uri(vitro("mostSpecificType"))
-      type_property =               _get_ontology_property_by_uri(rdf("type"))
-
-      most_specific_type_resource = _create_model_resource_from_uri(most_specific_type_uri)
-
-      resource.add_property(most_specific_type_property, most_specific_type_resource)
-      resource.add_property(type_property, most_specific_type_resource)
+      _assign_most_specific_type(resource, mappable)
+      _assign_additional_types(resource, mappable)
 
       owl_thing_resource = _create_model_resource_from_uri(owl("Thing"))
       resource.add_property(type_property, owl_thing_resource)
-
-      type_class_iter = type_class.list_super_classes
-      while type_class_iter.has_next
-        super_type_class = type_class_iter.next
-        super_type_class_uri = super_type_class.get_uri
-        if super_type_class_uri
-          super_type_resource = _create_model_resource_from_uri(super_type_class_uri)
-          resource.add_property(type_property,super_type_resource)
-        end
-      end
     end
 
     def assign_properties(resource, mappable)
@@ -126,7 +111,43 @@ module VivoMapper
       end
     end
 
+    def _assign_additional_types(resource, mappable)
+      additional_type_uris = mappable.additional_types
+      return unless additional_type_uris.present?
+
+      additional_type_uris.each do |type_uri|
+        type_resource = _create_model_resource_from_uri(type_uri)
+        resource.add_property(type_property, type_resource)
+
+        _add_type_superclasses(type_uri, resource)
+      end
+    end
+
+    def _assign_most_specific_type(resource, mappable)
+      most_specific_type_uri = mappable.most_specific_type
+      return unless most_specific_type_uri
+
+      most_specific_type_property = _get_ontology_property_by_uri(vitro("mostSpecificType"))
+
+      most_specific_type_resource = _create_model_resource_from_uri(most_specific_type_uri)
+      resource.add_property(most_specific_type_property, most_specific_type_resource)
+      resource.add_property(type_property, most_specific_type_resource)
+
+      _add_type_superclasses(most_specific_type_uri, resource)
+    end
+
+    def _add_type_superclasses(type_uri, resource)
+      type_class = _get_ontology_class_by_uri(type_uri)
+      type_class_iter = type_class.list_super_classes
+      while type_class_iter.has_next
+        super_type_class = type_class_iter.next
+        super_type_class_uri = super_type_class.get_uri
+        if super_type_class_uri
+          super_type_resource = _create_model_resource_from_uri(super_type_class_uri)
+          resource.add_property(type_property,super_type_resource)
+        end
+      end
+    end
+
   end
-
 end
-
