@@ -32,6 +32,10 @@ module VivoMapper
         mapping.most_specific_type(self)
       end
 
+      def additional_types
+        mapping.additional_types(self) if mapping.respond_to?(:additional_types)
+      end
+
       def properties
         mapping.properties(self)
       end
