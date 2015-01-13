@@ -34,9 +34,6 @@ module VivoMapper
     def assign_types(resource, mappable)
       _assign_most_specific_type(resource, mappable)
       _assign_additional_types(resource, mappable)
-
-      owl_thing_resource = _create_model_resource_from_uri(owl("Thing"))
-      resource.add_property(type_property, owl_thing_resource)
     end
 
     def assign_properties(resource, mappable)
@@ -121,6 +118,13 @@ module VivoMapper
 
         _add_type_superclasses(type_uri, resource)
       end
+
+      _add_thing_as_super_type(resource)
+    end
+
+    def _add_thing_as_super_type(resource)
+      owl_thing_resource = _create_model_resource_from_uri(owl("Thing"))
+      resource.add_property(type_property, owl_thing_resource)
     end
 
     def _assign_most_specific_type(resource, mappable)
@@ -134,6 +138,8 @@ module VivoMapper
       resource.add_property(type_property, most_specific_type_resource)
 
       _add_type_superclasses(most_specific_type_uri, resource)
+
+      _add_thing_as_super_type(resource)
     end
 
     def _add_type_superclasses(type_uri, resource)
