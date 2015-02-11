@@ -27,6 +27,7 @@ module RdfPrefixes
     "skos"    => "http://www.w3.org/2004/02/skos/core#",
     "vpublic" => "http://vitro.mannlib.cornell.edu/ns/vitro/public#",
     "core"    => "http://vivoweb.org/ontology/core#",
+    "c4o"     => "http://purl.org/spar/c4o/",
     "vivo"    => "http://vivoweb.org/ontology/core#"
   }
 
