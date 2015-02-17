@@ -31,6 +31,10 @@ module RdfPrefixes
     "vivo"    => "http://vivoweb.org/ontology/core#"
   }
 
+  def obo_experience
+    "ARG_2000021"
+  end
+
   def obo_has_contact_info
     "ARG_2000028"
   end
