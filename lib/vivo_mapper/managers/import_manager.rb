@@ -6,11 +6,9 @@ java_import 'com.hp.hpl.jena.query.ResultSetFormatter'
 require 'vivo_mapper/mapper'
 require 'vivo_mapper/loaders/difference_loader'
 require 'vivo_mapper/loaders/simple_loader'
-require 'observer'
 
 module VivoMapper
   class ImportManager
-    include Observable
 
     attr_reader :config, :logger
 
@@ -61,23 +59,6 @@ module VivoMapper
       generic_individual_difference_import(person_uri, name, resources, store_type)
     end
 
-    def remove_graph(name,graph,store_type=:sdb)
-      store(name, 'destination',store_type) do |destination_model|
-        loader = VivoMapper::SimpleLoader.new(destination_model, logger)
-        loader.remove_model(graph)
-      end
-    end
-
-    def simple_removal(name, resources=[],store_type=:sdb)
-      load_resources(name,resources,'remove')
-      store(name, 'destination',store_type) do |destination_model|
-        store(name, 'incoming') do |incoming_model|
-          loader = VivoMapper::SimpleLoader.new(destination_model, logger)
-          loader.remove_model(incoming_model)
-        end
-      end
-    end
-
     def clear_destination(model_name)
       store(model_name, 'destination') do |model|
         model.remove_all
@@ -90,8 +71,7 @@ module VivoMapper
       end
     end
 
-    def load_resources(name, resources=[],transaction_type='add')
-      changed; notify_observers(resources)
+    def load_resources(name, resources=[])
       truncate('incoming')
       store(name, 'incoming') do |model|
         mapper = VivoMapper::Mapper.new(config.namespace, model, config.ontology_model)
@@ -99,25 +79,8 @@ module VivoMapper
       end
     end
 
-    def export(name, store_name, format=:sdb)
-      dt=Time.now.strftime("%Y%m%d")
-      file_name="#{Rails.root}/log/#{name}_#{dt}.rdf" #TODO: eliminate Rails reference
-      output_stream=java.io.FileOutputStream.new(file_name)
-      store(name, store_name, format) do |model|
-        model.write(output_stream,"RDF/XML")
-      end
-    end
-
     def truncate(store_name)
       config.send("#{store_name}_sdb").truncate
-    end
-
-    def differences_between(name, first_model_name, second_model_name)
-      store(name, first_model_name) do |first|
-        store(name, second_model_name) do |second|
-          second.difference(first)
-        end
-      end
     end
 
     def size(name, s, format=:sdb)
@@ -149,20 +112,6 @@ module VivoMapper
       config.send("#{s}_sdb")
     end
 
-    def get_from_destination(model_name, query_string, variable_name)
-      results = []
-      return_results = []
-      store(model_name, 'destination') do |model|
-        query = QueryFactory.create(query_string)
-        item_qexec = QueryExecutionFactory.create(query, model)
-        results = item_qexec.execSelect()
-        while results.has_next do 
-          return_results << results.next.get(variable_name).to_s
-        end
-      end
-      return return_results
-    end
- 
   end
 
 end
