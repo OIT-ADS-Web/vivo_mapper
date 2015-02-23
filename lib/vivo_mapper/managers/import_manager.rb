@@ -59,6 +59,13 @@ module VivoMapper
       generic_individual_difference_import(person_uri, name, resources, store_type)
     end
 
+    def remove_graph(name,graph,store_type=:sdb)
+      store(name, 'destination',store_type) do |destination_model|
+        loader = VivoMapper::SimpleLoader.new(destination_model, logger)
+        loader.remove_model(graph)
+      end
+    end
+
     def clear_destination(model_name)
       store(model_name, 'destination') do |model|
         model.remove_all
