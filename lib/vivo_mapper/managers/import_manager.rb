@@ -17,9 +17,9 @@ module VivoMapper
       @logger = logger
     end
 
-    def simple_import(name, resources=[], store_type=:sdb)
+    def simple_import(name, resources=[])
       load_resources(name, resources)
-      store(name, 'destination',store_type) do |destination_model|
+      store(name, 'destination') do |destination_model|
         store(name, 'incoming') do |incoming_model|
           loader = VivoMapper::SimpleLoader.new(destination_model, logger)
           loader.add_model(incoming_model)
@@ -27,9 +27,9 @@ module VivoMapper
       end
     end
 
-    def difference_import(name, resources=[],store_type=:sdb)
+    def difference_import(name, resources=[])
       load_resources(name, resources)
-      store(name, 'destination',store_type) do |destination_model|
+      store(name, 'destination') do |destination_model|
         store(name, 'incoming') do |incoming_model|
           loader = VivoMapper::DifferenceLoader.new(destination_model, logger)
           loader.import_model(incoming_model)
@@ -37,14 +37,14 @@ module VivoMapper
       end
     end
 
-    def generic_individual_difference_import(uri, name, resources=[],store_type=:sdb,options={})
+    def generic_individual_difference_import(uri, name, resources=[],options={})
       load_resources(name, resources)
       begin
         map_obj = options.fetch(:map_object) {eval "#{name}.mapping"}
       rescue
         map_obj=EmptyMap
       end 
-      store(name, 'destination',store_type) do |destination_model|
+      store(name, 'destination') do |destination_model|
         store(name, 'incoming') do |incoming_model|
           loader = VivoMapper::DifferenceLoader.new(destination_model, logger)
           diff_model = map_obj.graph_for(uri, destination_model, options)
@@ -53,14 +53,14 @@ module VivoMapper
       end
     end
 
-    def individual_difference_import(duid, name, resources=[],store_type=:sdb)
+    def individual_difference_import(duid, name, resources=[])
       person = VivoMapper::Person.new(:uid => duid)
       person_uri = person.mapping.uri(@config.namespace,person)
-      generic_individual_difference_import(person_uri, name, resources, store_type)
+      generic_individual_difference_import(person_uri, name, resources)
     end
 
-    def remove_graph(name,graph,store_type=:sdb)
-      store(name, 'destination',store_type) do |destination_model|
+    def remove_graph(name,graph)
+      store(name, 'destination') do |destination_model|
         loader = VivoMapper::SimpleLoader.new(destination_model, logger)
         loader.remove_model(graph)
       end
@@ -90,12 +90,12 @@ module VivoMapper
       config.send("#{store_name}_sdb").truncate
     end
 
-    def size(name, s, format=:sdb)
-      data_store(s, format).with_named_model(name) {|model| model.size }
+    def size(name, s)
+      data_store(s).with_named_model(name) {|model| model.size }
     end
 
-    def store(name, s, format=:sdb, &block)
-      data_store(s, format).with_named_model(fully_qualified_name(name)) {|model| block.call(model) }
+    def store(name, s, &block)
+      data_store(s).with_named_model(fully_qualified_name(name)) {|model| block.call(model) }
     end
 
     def fully_qualified_name(name)
@@ -111,11 +111,11 @@ module VivoMapper
       end
     end
 
-    def union(s, format=:sdb, &block)
-      data_store(s, format).with_union_model {|model| block.call(model) }
+    def union(s, &block)
+      data_store(s).with_union_model {|model| block.call(model) }
     end
 
-    def data_store(s, format=:sdb)
+    def data_store(s)
       config.send("#{s}_sdb")
     end
 
