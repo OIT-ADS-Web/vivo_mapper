@@ -7,7 +7,6 @@ module VivoMapper
 
     def initialize(destination_model, logger)
       @destination_model, @logger = destination_model, logger
-      add_observer(DukeVivoMapper::AuditLogger)
     end
 
     def log_data(command, model)

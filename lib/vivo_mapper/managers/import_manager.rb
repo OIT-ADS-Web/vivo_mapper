@@ -10,11 +10,22 @@ require 'vivo_mapper/loaders/simple_loader'
 module VivoMapper
   class ImportManager
 
-    attr_reader :config, :logger
+    attr_reader :config, :logger, :observers
 
     def initialize(config,logger)
       @config = config
       @logger = logger
+      @observers = []
+    end
+
+    def add_observer(observer)
+      @observers << observer
+    end
+
+    def _add_observers_to(loader)
+      observers.each do |observer|
+        loader.add_observer(observer)
+      end
     end
 
     def simple_import(name, resources=[])
@@ -22,6 +33,7 @@ module VivoMapper
       store(name, 'destination') do |destination_model|
         store(name, 'incoming') do |incoming_model|
           loader = VivoMapper::SimpleLoader.new(destination_model, logger)
+          _add_observers_to(loader)
           loader.add_model(incoming_model)
         end 
       end
@@ -32,6 +44,7 @@ module VivoMapper
       store(name, 'destination') do |destination_model|
         store(name, 'incoming') do |incoming_model|
           loader = VivoMapper::DifferenceLoader.new(destination_model, logger)
+          _add_observers_to(loader)
           loader.import_model(incoming_model)
         end
       end
@@ -47,6 +60,7 @@ module VivoMapper
       store(name, 'destination') do |destination_model|
         store(name, 'incoming') do |incoming_model|
           loader = VivoMapper::DifferenceLoader.new(destination_model, logger)
+          _add_observers_to(loader)
           diff_model = map_obj.graph_for(uri, destination_model, options)
           loader.import_model(incoming_model, diff_model)
         end
@@ -62,6 +76,7 @@ module VivoMapper
     def remove_graph(name,graph)
       store(name, 'destination') do |destination_model|
         loader = VivoMapper::SimpleLoader.new(destination_model, logger)
+        _add_observers_to(loader)
         loader.remove_model(graph)
       end
     end
