@@ -58,6 +58,15 @@ performance concerns.
 
 TODO: Add examples of use
 
+You can add observers to loads by instantiating an `import_manager`, and then
+calling `import_manager.add_observer(some_observer)`. Each time triples are removed or added, `#update` will be called on each observer for each triple, like so:
+
+    observer.update(entry, 'add')
+
+or
+
+    observer.update(entry, 'remove')
+
 ## Jar Dependencies
 
 This app is designed to be run in JRuby and depends on a couple jar files. We
