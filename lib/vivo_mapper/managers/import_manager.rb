@@ -10,12 +10,13 @@ require 'vivo_mapper/loaders/simple_loader'
 module VivoMapper
   class ImportManager
 
-    attr_reader :config, :logger, :observers
+    attr_reader :config, :logger, :observers, :listeners
 
     def initialize(config,logger)
       @config = config
       @logger = logger
       @observers = []
+      @listeners = config.listeners
     end
 
     def add_observer(observer)
@@ -110,7 +111,12 @@ module VivoMapper
     end
 
     def store(name, s, &block)
-      data_store(s).with_named_model(fully_qualified_name(name)) {|model| block.call(model) }
+      data_store(s).with_named_model(fully_qualified_name(name)) do |model|
+        listeners.each do |listener|
+          listener.add_model(name, s, model)
+        end
+        block.call(model)
+      end
     end
 
     def fully_qualified_name(name)
