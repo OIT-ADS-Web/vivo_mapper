@@ -44,6 +44,9 @@ Then, to get the jar dependencies, execute:
 
 ## Usage
 
+Version 1.0 of this gem is updated to support VIVO 1.7. VIVO 1.6 may also work,
+but is not tested.
+
 TODO: Explain resources and maps that have to be provided; the duck types that
 are required.
 
